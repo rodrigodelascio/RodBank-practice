@@ -82,6 +82,18 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements);
 
+
+const calcDisplayBalance = function (movements) {
+
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+
+  labelBalance.textContent = `GBP ${balance}`;
+
+};
+
+calcDisplayBalance(account1.movements);
+
+
 const createUsernames = function (accs) {
 
   accs.forEach(function (acc) {
@@ -90,6 +102,10 @@ const createUsernames = function (accs) {
 };
 
 createUsernames(accounts);
+
+
+
+
 
 
 
@@ -117,3 +133,15 @@ const movementsDesc = movements.map((mov, i) =>
   `Movement ${i + 1}: You ${mov > 0 ? "deposited" : "withdrew"} ${Math.abs(mov)}`
 
 );
+
+
+const deposits = movements.filter(function (mov) {
+  return mov > 0;
+});
+
+const withdrawals = movements.filter(mov => mov < 0);
+
+// accumulator -> snowball
+const balance = movements.reduce((acc, cur) => acc + cur, 0);
+
+console.log(balance);
