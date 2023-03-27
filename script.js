@@ -80,8 +80,6 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
 
 const calcDisplayBalance = function (movements) {
 
@@ -91,20 +89,17 @@ const calcDisplayBalance = function (movements) {
 
 };
 
-calcDisplayBalance(account1.movements);
 
-const calcDisplaySummary = function (movements) {
-  const incomes = movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `€${incomes}`;
 
-  const out = movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
+  const out = acc.movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `€${Math.abs(out)}`;
 
-  const interest = movements.filter(mov => mov > 0).map(deposit => deposit * (1.2 / 100)).filter((int, i, arr) => int >= 1).reduce((acc, int) => acc + int, 0);
+  const interest = acc.movements.filter(mov => mov > 0).map(deposit => deposit * (acc.interestRate / 100)).filter((int, i, arr) => int >= 1).reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `€${interest}`;
 };
-
-calcDisplaySummary(account1.movements);
 
 
 const createUsernames = function (accs) {
@@ -116,6 +111,33 @@ const createUsernames = function (accs) {
 
 createUsernames(accounts);
 
+
+let currentAccount;
+
+btnLogin.addEventListener("click", function (e) {
+  // to prevent form from submitting
+  e.preventDefault();
+
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+
+  console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
+
+    containerApp.style.opacity = 100;
+
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    displayMovements(currentAccount.movements);
+
+    calcDisplayBalance(currentAccount.movements);
+
+    calcDisplaySummary(currentAccount);
+  };
+});
 
 
 
@@ -161,3 +183,7 @@ const balance = movements.reduce((acc, cur) => acc + cur, 0);
 
 
 const max = movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0]);
+
+const firstWithdrawal = movements.find(mov => mov < 0);
+
+const account = accounts.find(acc => acc.owner === "Jessica Jownes");
