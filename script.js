@@ -60,11 +60,13 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
 
   containerMovements.innerHTML = "";
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
 
     const type = mov > 0 ? "deposit" : "withdrawal"
 
@@ -161,6 +163,22 @@ btnTransfer.addEventListener("click", function (e) {
 });
 
 
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= (amount * 0.1))) {
+    currentAccount.movements.push(amount);
+
+    updateUI(currentAccount);
+  };
+
+  inputLoanAmount.value = "";
+
+});
+
+
 btnClose.addEventListener("click", function (e) {
   e.preventDefault();
 
@@ -177,6 +195,15 @@ btnClose.addEventListener("click", function (e) {
   inputCloseUsername.value = inputClosePin.value = "";
 
 });
+
+let sorted = false;
+
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+
 
 
 
@@ -223,3 +250,15 @@ const max = movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0]);
 const firstWithdrawal = movements.find(mov => mov < 0);
 
 const account = accounts.find(acc => acc.owner === "Jessica Jownes");
+
+const anyDeposits = movements.some(mov => mov > 2000);
+
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+
+const overallBalance = accounts.map(acc => acc.movements).flat().reduce((acc, mov) => acc + mov, 0);
+
+
+const overallBalance2 = accounts.flatMap(acc => acc.movements).reduce((acc, mov) => acc + mov, 0);
+
