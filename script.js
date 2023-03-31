@@ -262,3 +262,14 @@ const overallBalance = accounts.map(acc => acc.movements).flat().reduce((acc, mo
 
 const overallBalance2 = accounts.flatMap(acc => acc.movements).reduce((acc, mov) => acc + mov, 0);
 
+// const diceRoll = Array.from({ length: 100 }, () => Math.trunc((Math.random() * 6) + 1));
+
+// console.log(diceRoll);
+
+labelBalance.addEventListener("click", function () {
+  const movementsUI = Array.from(document.querySelectorAll(".movements__value"), el => Number(el.textContent.replace("€", "")));
+
+  console.log(movementsUI);
+});
+
+
